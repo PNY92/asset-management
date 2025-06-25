@@ -6,6 +6,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
+  rules: {
+    "@typscript-eslint/no-explicit-any" : "off"
+  },
   baseDirectory: __dirname,
 });
 

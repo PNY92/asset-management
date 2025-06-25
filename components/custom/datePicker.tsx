@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 
-function DatePicker({date, setDate} : any) {
+function DatePicker({date, setDate} : {date: DateRange | undefined, setDate: Dispatch<SetStateAction<DateRange | undefined>>}) {
     const [open, setOpen] = useState(false);
     
     return (

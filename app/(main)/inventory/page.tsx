@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ColumnDef, createColumnHelper, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { CellContext, ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { CircleCheck, Hand } from "lucide-react";
 import { useState } from "react";
 
@@ -41,7 +41,6 @@ const dummyData = [
     }
 ]
 
-const columnHelper = createColumnHelper<Asset>();
 
 const defaultColumns: ColumnDef<Asset>[] = [
     {
@@ -62,8 +61,8 @@ const defaultColumns: ColumnDef<Asset>[] = [
     {
         accessorKey: "status",
         header: "Status",
-        cell: (row: any) => {
-            const value = row.getValue(); return (
+        cell: (row: CellContext<Asset, unknown>) => {
+            const value : any = row.getValue(); return (
                 <Badge variant="outline">
                     <value.icon></value.icon>
                     <span>{value.name}</span>
@@ -82,7 +81,7 @@ const defaultColumns: ColumnDef<Asset>[] = [
 
 ]
 function InventoryList() {
-    const [data, setData] = useState<Asset[]>([...dummyData])
+    const [data] = useState<Asset[]>([...dummyData])
 
 
 

@@ -8,15 +8,14 @@ import { SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
-type item = {
-    asset_tag: string,
-    model: string,
-    category: string,
-}
+// type item = {
+//     asset_tag: string,
+//     model: string,
+//     category: string,
+// }
 
 function BookingPage() {
     const [date, setDate] = useState<DateRange | undefined>(undefined);
-    const [availableItems, setAvailableItems] = useState();
     const supabase = createClient();
 
     async function handleOnSearch() {

@@ -1,6 +1,4 @@
 import { LoginForm } from "@/components/custom/login_form";
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 
 function LoginPage() {
