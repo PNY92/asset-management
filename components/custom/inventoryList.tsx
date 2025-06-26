@@ -132,12 +132,4 @@ function InventoryList() {
     )
 }
 
-
-function InventoryPage() {
-    return (
-        <InventoryList>
-        </InventoryList>
-    );
-}
-
-export default InventoryPage;
+export {InventoryList}

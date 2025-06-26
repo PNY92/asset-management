@@ -1,3 +1,5 @@
+"use client"
+
 import { Dispatch, SetStateAction, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Label } from "../ui/label";

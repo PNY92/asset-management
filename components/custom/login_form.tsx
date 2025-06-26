@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useActionState, useEffect } from "react"
-import { signIn } from "@/app/actions/auth"
+import { signIn } from "@/src/app/actions/auth"
 import { toast } from "sonner"
 
 export function LoginForm({

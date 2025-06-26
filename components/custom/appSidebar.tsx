@@ -1,15 +1,29 @@
-
+"use client"
 import { SidebarGroup, SidebarGroupLabel, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarGroupContent, SidebarMenuButton, Sidebar, SidebarTrigger, SidebarHeader, SidebarFooter } from '@/components/ui/sidebar';
 import sidebar_config from '@/config/sidebar';
 import Link from 'next/link';
 import { NavUser } from './nav_user';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState } from 'react';
 
-async function AppSidebar({ children }: { children: React.ReactNode }) {
+function AppSidebar({ children }: { children: React.ReactNode }) {
 
-    const supabase = await createClient();
+    type User = {
+        role: string,
+        email: string
+    }
 
-    const {data : { user }} = await supabase.auth.getUser();
+    const [user, setUser] = useState< User | null>()
+
+    useEffect(() => {
+
+        async function getAuth() {
+            const supabase = await createClient();
+
+            setUser((await supabase.auth.getUser()).data.user as User);
+        }
+        getAuth();
+    }, [user]);
 
     return (
         <>
