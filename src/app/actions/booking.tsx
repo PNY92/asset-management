@@ -2,6 +2,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { DateRange } from "react-day-picker";
 
+type itemType = {
+    id: string,
+    asset_tag: string,
+    model: string,
+    category: string,
+    display_name: string
+}
+
+type submitFormat = {
+    items: itemType[],
+    date: DateRange | undefined,
+    event_form: FormData
+}
+
 
 async function searchBooking(date: DateRange | undefined) {
     const supabase = await createClient();
@@ -23,4 +37,40 @@ async function searchBooking(date: DateRange | undefined) {
     return availableAssets.data;
 }
 
-export { searchBooking }
+async function submitBooking(submission: submitFormat) {
+
+    const supabase = await createClient();
+
+    const event_response = await supabase.from("Event").insert({
+        name: submission.event_form.get("name"),
+        description: submission.event_form.get("description"),
+        organization_id: 1
+    })
+
+    if (event_response.error) {
+        return { error: event_response.error.message }
+    }
+
+
+    if (submission.items.length > 0) {
+
+        
+        submission.items.forEach(async (item) => {
+            const booking_response = await supabase.from("BookingRecord").insert({
+                asset_id: item.id,
+                end_date: submission.date?.to,
+                start_date: submission.date?.from
+            })
+
+            if (booking_response.error) {
+                return {error: booking_response.error.message}
+            }
+        })
+    }
+
+
+    return {success: "Successfully booked"}
+
+}
+
+export { searchBooking, submitBooking }

@@ -1,4 +1,4 @@
-
+"use client"
 
 import { BookingSearcher } from "@/components/custom/bookingSearcher";
 import { Label } from "@/components/ui/label";

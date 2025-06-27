@@ -22,12 +22,11 @@ export function LoginForm({
     const [state, formAction, pending] = useActionState(signIn, null);
 
     useEffect(() => {
-        console.log(state?.error)
        if (state?.error) {
         toast.error("Login failed", {
             description: state.error
         })
-       } 
+       }
     }, [state])
     
     return (

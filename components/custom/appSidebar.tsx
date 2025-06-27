@@ -23,7 +23,7 @@ function AppSidebar({ children }: { children: React.ReactNode }) {
             setUser((await supabase.auth.getUser()).data.user as User);
         }
         getAuth();
-    }, [user]);
+    }, []);
 
     return (
         <>

@@ -4,47 +4,46 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CellContext, ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { CircleCheck, Hand } from "lucide-react";
-import { useState } from "react";
+import { CircleCheck, Ellipsis, Hand, PackagePlus, RefreshCw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Label } from "../ui/label";
+import { fetchInventoryItems } from "@/src/app/actions/inventory";
+import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import Link from "next/link";
 
-const STATUS_READY = {
-    id: 1,
-    icon: CircleCheck,
-    name: "Ready to Deploy"
+
+const StatusList = {
+    STATUS_READY: {
+        icon: CircleCheck,
+        name: "Ready to Deploy"
+    },
+    STATUS_DEPLOYED: {
+        icon: Hand,
+        name: "Deployed"
+    }
+} as const;
+
+
+enum status {
+    STATUS_READY = "STATUS_READY",
+    STATUS_DEPLOYED = "STATUS_DEPLOYED"
 }
-const STATUS_DEPLOYED = {
-    id: 2,
-    icon: Hand,
-    name: "Deployed"
-}
-
-
 
 type Asset = {
-    assetTag: string,
+    id: string,
+    asset_tag: string,
     model: string,
     category: string,
-    status: { id: number, name: string }
+    status: status,
+    display_name: string,
+    organization_id: string
 }
-const dummyData = [
-    {
-        assetTag: "ITSM-1000",
-        model: "Lenovo",
-        category: "Laptop",
-        status: STATUS_READY
-    },
-    {
-        assetTag: "ITSM-1001",
-        model: "Lenovo",
-        category: "Laptop",
-        status: STATUS_DEPLOYED
-    }
-]
 
 
 const defaultColumns: ColumnDef<Asset>[] = [
     {
-        accessorKey: "assetTag",
+        accessorKey: "asset_tag",
         header: "Asset Tag",
         cell: row => row.getValue()
     },
@@ -62,10 +61,12 @@ const defaultColumns: ColumnDef<Asset>[] = [
         accessorKey: "status",
         header: "Status",
         cell: (row: CellContext<Asset, unknown>) => {
-            const value : any = row.getValue(); return (
+            const value: status = row.getValue() as status;
+            const statusData = StatusList[value]
+            return (
                 <Badge variant="outline">
-                    <value.icon></value.icon>
-                    <span>{value.name}</span>
+                    <statusData.icon></statusData.icon>
+                    <span>{StatusList[value].name}</span>
 
                 </Badge>)
         }
@@ -73,7 +74,23 @@ const defaultColumns: ColumnDef<Asset>[] = [
     {
         header: "Actions",
         cell: () => (
-            <Button>Edit</Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">
+                        <Ellipsis></Ellipsis>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" side="right">
+                    <DropdownMenuItem>
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        Delete
+                    </DropdownMenuItem>
+
+                </DropdownMenuContent>
+            </DropdownMenu>
+
 
         )
 
@@ -81,55 +98,103 @@ const defaultColumns: ColumnDef<Asset>[] = [
 
 ]
 function InventoryList() {
-    const [data] = useState<Asset[]>([...dummyData])
+    const [fetchedItems, setFetchedItems] = useState<Asset[]>([])
+
+    useEffect(() => {
+
+        async function fetchItems() {
+            const items: {
+                error?: string,
+                data?: Asset[]
+            } = await fetchInventoryItems();
+
+            if (items.error) {
+                toast.error("Error fetching items",
+                    { description: items.error }
+                )
+            }
 
 
+            setFetchedItems(items.data!);
+        }
 
-    const table = useReactTable({ data, columns: defaultColumns, getCoreRowModel: getCoreRowModel() } as any)
+        fetchItems();
+    }, [])
+
+    const table = useReactTable({
+        data: fetchedItems,
+        columns: defaultColumns,
+        getCoreRowModel: getCoreRowModel()
+    } as any)
 
     return (
         <>
-        <div className="flex mb-4">
-            <Input className="max-w-3xs" type="text" placeholder="Filter task..."/>
+            <div className="flex flex-col gap-1">
+                <Label className="text-md">
+                    Inventory List
+                </Label>
+                <div className="text-muted-foreground text-sm">
+                    A list for managing inventory purposes
+                </div>
+            </div>
+            <div className="flex mt-8 justify-between items-center">
+                <div>
+                    <Input className="max-w-3xs" type="text" placeholder="Filter task..." />
+                </div>
+                <div className="flex flex-row items-center gap-2 mr-2">
+                    <Button variant="secondary">
+                        <RefreshCw></RefreshCw>
+                        Refresh
+                    </Button>
+                    <Link href="/inventory/create">
+                        <Button>
+                            <PackagePlus></PackagePlus>
+                            <span>
+                                Create Asset
+                            </span>
+                        </Button>
+                    </Link>
 
-        </div>
-        
-        
-        <div className="rounded-md border">
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => (
-                                <TableHead key={header.id}>
-                                    {header.isPlaceholder ? null : flexRender(
-                                        header.column.columnDef.header,
-                                        header.getContext()
-                                    )}
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                        <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
-                                <TableCell key={cell.id}>
-                                    {flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))}
+                </div>
 
-                </TableBody>
-            </Table>
-        </div>
+            </div>
+
+
+            <div className="mt-4 rounded-md border">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id}>
+                                        {header.isPlaceholder ? null : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows.map((row) => (
+                            <TableRow key={row.id}>
+                                {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+
+                    </TableBody>
+                </Table>
+            </div>
         </>
     )
 }
 
-export {InventoryList}
+export { InventoryList }
