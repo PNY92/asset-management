@@ -50,6 +50,24 @@ function AppSidebar({ children }: { children: React.ReactNode }) {
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Administrative</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {sidebar_config.protected_items.map((item) =>
+                                    <SidebarMenuItem key={item.label}>
+                                        <SidebarMenuButton asChild>
+                                            <Link href={item.path}>
+                                                <item.icon></item.icon>
+                                                <span>{item.label}</span>
+                                            </Link>
+
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
                 </SidebarContent>
                 <SidebarFooter>
                     

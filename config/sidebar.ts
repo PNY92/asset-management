@@ -1,5 +1,5 @@
 
-import { BoxesIcon, BoxIcon, CalendarCheck, GaugeCircleIcon, PackageIcon } from "lucide-react"
+import { BoxesIcon, BoxIcon, CalendarCheck, GaugeCircleIcon, PackageIcon, Users } from "lucide-react"
 
 const sidebar_config = {
     "headerLabel": "Testing Portal",
@@ -20,6 +20,13 @@ const sidebar_config = {
             "icon": CalendarCheck
         }
         
+    ],
+    "protected_items" : [
+        {
+            "label": "Users",
+            "path": "/users",
+            "icon": Users
+        }
     ]
 }
 

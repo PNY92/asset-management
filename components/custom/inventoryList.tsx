@@ -48,6 +48,11 @@ const defaultColumns: ColumnDef<Asset>[] = [
         cell: row => row.getValue()
     },
     {
+        accessorKey: "display_name",
+        header: "Display Name",
+        cell: row => row.getValue()
+    },
+    {
         accessorKey: "model",
         header: "Model",
         cell: row => row.getValue()
@@ -57,6 +62,7 @@ const defaultColumns: ColumnDef<Asset>[] = [
         header: "Category",
         cell: row => row.getValue()
     },
+    
     {
         accessorKey: "status",
         header: "Status",

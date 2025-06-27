@@ -126,7 +126,7 @@ function BookingForm({ getItems, getDateRange }: { getItems: () => itemType[], g
                     </Textarea>
                 </div>
 
-                <div>
+                <div className="mt-10">
                     <Button type="submit">Submit</Button>
                 </div>
             </form>
@@ -289,7 +289,7 @@ function BookingDatePicker({ callback }: { callback: (date: DateRange | undefine
         <>
             <div className="flex gap-3">
                 <div className="flex flex-col gap-3">
-                    <Label htmlFor="date-picker" className="text-md px-1">
+                    <Label htmlFor="date-picker" className="text-md">
                         Scheduled Date
                     </Label>
                     <div className="flex item-center">
@@ -330,7 +330,7 @@ function BookingSearcher() {
 
     return (
         <>
-            <div className="flex flex-col gap-y-15">
+            <div className="flex flex-col gap-y-15 mb-8">
 
                 <BookingDatePicker callback={handleOnClicked}></BookingDatePicker>
                 <BookingList items={items} loading={isLoading}></BookingList>
